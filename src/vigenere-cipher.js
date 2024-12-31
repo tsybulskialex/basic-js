@@ -20,13 +20,63 @@ const { NotImplementedError } = require('../extensions/index.js');
  * 
  */
 class VigenereCipheringMachine {
-  encrypt() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  constructor(machine = true) {
+    this.machine = machine;
   }
-  decrypt() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+
+  encrypt(str, key) {
+    if (str === undefined || key === undefined) {
+      throw new Error('Incorrect arguments!');
+    }
+    const upperAlphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let result = '';
+    const newStr = key.toUpperCase();
+    let count = 0;
+    for (let i = 0; i < str.length; i += 1) {
+      if (count === newStr.length) {
+        count = 0;
+      }
+      let keyCur = upperAlphabet.indexOf(newStr[count]);
+      let curCharStr = str[i].toUpperCase();
+      let curCharId = upperAlphabet.indexOf(curCharStr);
+      if (str[i] === ' ' || upperAlphabet.includes(curCharStr) === false) {
+        result += str[i];
+        continue;
+      }
+      result += upperAlphabet[(curCharId + keyCur) % 26];
+      count += 1;
+    }
+    if (this.machine === false) {
+      return result.split('').reverse().join('');
+    }
+    return result;
+  }
+  decrypt(str, key) {
+    if (str === undefined || key === undefined) {
+      throw new Error('Incorrect arguments!');
+    }
+    const upperAlphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let result = '';
+    const newStr = key.toUpperCase();
+    let count = 0;
+    for (let i = 0; i < str.length; i += 1) {
+      if (count === newStr.length) {
+        count = 0;
+      }
+      let keyCur = upperAlphabet.indexOf(newStr[count]);
+      let curCharStr = str[i].toUpperCase();
+      let curCharId = upperAlphabet.indexOf(curCharStr);
+      if (str[i] === ' ' || upperAlphabet.includes(curCharStr) === false) {
+        result += str[i];
+        continue;
+      }
+      result += upperAlphabet[(curCharId - keyCur + 26) % 26];
+      count += 1;
+    }
+    if (this.machine === false) {
+      return result.split('').reverse().join('');
+    }
+    return result;
   }
 }
 
